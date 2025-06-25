@@ -126,7 +126,7 @@ def analyze_path(path, ignore_files=None, ignore_dirs=None, custom_ignores=None)
                 file_paths.append(file_path)
 
     # Limit to specified maximum files for better performance
-    total_files = min(len(file_paths))
+    total_files = len(file_paths)
 
     # Read and process files with progress bar
     with tqdm(total=total_files, desc="📂 Processing files", 
@@ -243,7 +243,7 @@ def ask_openai(prompt):
         return "Error: An unexpected error occurred"
     
 
-def generate_readme_from_path(path, output_file, max_files=50, custom_ignores=None):
+def generate_readme_from_path(path, output_file, custom_ignores=None):
     # Validate input path
     if not os.path.exists(path):
         print(f"❌ Error: Path '{path}' does not exist.")
@@ -257,7 +257,7 @@ def generate_readme_from_path(path, output_file, max_files=50, custom_ignores=No
     print(f"📄 README will be saved to: {output_file}")
     
     try:
-        summary = analyze_path(path, max_files=max_files, custom_ignores=custom_ignores)
+        summary = analyze_path(path, custom_ignores=custom_ignores)
         
         if summary == "No readable files found.":
             print("⚠️  Warning: No readable files found in the specified path.")
@@ -369,3 +369,4 @@ You can use emojis like ✅ ⚙️ 🚀 to make sections more readable.
     except Exception as e:
         print(f"❌ Error during README generation: {e}")
         return False
+    

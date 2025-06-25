@@ -10,7 +10,7 @@ from tqdm import tqdm
 # Set up a secure HTTP client
 http_client = Client(verify=certifi.where())
 
-def analyze_path(path, ignore_files=None, ignore_dirs=None,  custom_ignores=None):
+def analyze_path(path, ignore_files=None, ignore_dirs=None, custom_ignores=None):
     ignore_files = ignore_files or []
     ignore_dirs = ignore_dirs or []
     custom_ignores = custom_ignores or []
@@ -125,13 +125,13 @@ def analyze_path(path, ignore_files=None, ignore_dirs=None,  custom_ignores=None
             if not is_ignored(file_path):
                 file_paths.append(file_path)
 
-    # Limit to specified maximum files for better performance
-    total_files = min(len(file_paths))
+    # Process all files (no limit)
+    total_files = len(file_paths)
 
     # Read and process files with progress bar
     with tqdm(total=total_files, desc="📂 Processing files", 
               bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]") as pbar:
-        for i, file_path in enumerate(file_paths[:total_files]):
+        for i, file_path in enumerate(file_paths):
             rel_path = os.path.relpath(file_path, start=path).replace("\\", "/")
             
             # Update progress bar description with current file
@@ -141,7 +141,7 @@ def analyze_path(path, ignore_files=None, ignore_dirs=None,  custom_ignores=None
             try:
                 # Skip binary files and very large files
                 file_size = os.path.getsize(file_path)
-                if file_size > 100000:  # Skip files larger than 100KB
+                if file_size > 5000000:  # Skip files larger than 5MB
                     result += f"(File too large - {file_size} bytes, skipped)\n"
                     pbar.update(1)
                     continue
@@ -172,7 +172,7 @@ def analyze_path(path, ignore_files=None, ignore_dirs=None,  custom_ignores=None
     return result if result else "No readable files found."
 
 def ask_openai(prompt):
-    api_key = os.getenv("GOOGLE_API_KEY")
+    api_key = "AIzaSyDM73o7B6NFDfhDqS8ZGrzOrnrErvTGveE"
     if not api_key:
         raise Exception("GOOGLE_API_KEY not found in environment variables.")
 
@@ -241,3 +241,4 @@ def ask_openai(prompt):
         animation_thread.join(timeout=0.1)
         print(f"\r❌ Unexpected error occurred                 ")
         return "Error: An unexpected error occurred"
+    

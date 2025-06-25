@@ -25,13 +25,6 @@ def main():
         print(f"❌ Error: The path '{args.path}' does not exist.")
         sys.exit(1)
     
-    # Check if GOOGLE_API_KEY is set
-    if not os.getenv("GOOGLE_API_KEY"):
-        print("❌ Error: GOOGLE_API_KEY environment variable is not set.")
-        print("Please set your Google AI Studio API key:")
-        print("   Windows: setx GOOGLE_API_KEY \"your-api-key-here\"")
-        print("   Linux/Mac: export GOOGLE_API_KEY='your-api-key-here'")
-        sys.exit(1)
     
     print(f"🚀 Starting AIMD - AI Markdown Generator")
     print(f"📂 Target path: {args.path}")
@@ -44,7 +37,7 @@ def main():
         actual_output = args.output
         print(f"📄 Output file: {actual_output}")
     
-    print(f"📊 Max files to process: {args.max_files}")
+    print(f"")
     
     # Show ignored items if any
     if args.ignore:
@@ -52,7 +45,7 @@ def main():
     
     print("-" * 50)
     
-    success = generate_readme_from_path(args.path, args.output, args.max_files, args.ignore)
+    success = generate_readme_from_path(args.path, args.output,  args.ignore)
     
     if success:
         print("-" * 50)

@@ -3,6 +3,7 @@ echo.
 echo 🚀 AIMD Setup for Windows
 echo ========================
 echo.
+cd /d "%~dp0"
 
 REM Check if running as administrator
 net session >nul 2>&1
