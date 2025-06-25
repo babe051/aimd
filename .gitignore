@@ -1,0 +1,123 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg
+*.egg-info/
+dist/
+build/
+.venv/
+.env
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+*.tgz
+.angular/
+public/
+.firebase/
+venv/
+# Logs
+*.log
+logs/
+firebase-debug.log*
+firebase-debug.*.log*
+
+# Databases
+*.sqlite3
+*.db
+
+# Temporary files
+*.swp
+*.swo
+*.bak
+*.tmp
+.DS_Store
+DS_Store
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.tar
+*.gz
+*.tgz
+
+# Process files
+*.pid
+*.pid.lock
+*.seed
+pids/
+
+# Coverage reports
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+coverage.json
+lcov.info
+cobertura.xml
+.nyc_output/
+coverage/
+
+# IDE specific files
+.vscode/
+.vscode-test/
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+.spyproject/
+.spydata/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Testing and linting cache
+.pytest_cache/
+.mypy_cache/
+.pylint.d/
+.bandit/
+.ruff_cache/
+.black/
+.isort_cache/
+.flake8/
+.pydocstyle/
+.tox/
+*.hypothesis/
+
+# Documentation
+docs/_build/
+
+# Type checkers
+.pyre/
+.pytype/
+
+# Firebase
+.firebase/
+functions/node_modules/
+functions/src/Keys.json
+functions/lib/Keys.json
+.dataconnect/
+
+# Runtime data
+lib-cov/
+.grunt/
+bower_components/
+.lock-wscript
+build/Release/
+.node_repl_history
+.eslintcache
+
+# Git
+.git/
