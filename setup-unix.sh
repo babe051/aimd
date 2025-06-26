@@ -1,108 +1,69 @@
 #!/bin/bash
 
-echo
+echo ""
 echo "🚀 AIMD Setup for Linux/macOS"
 echo "============================="
-echo
 
-# Check if running as root
-if [[ $EUID -ne 0 ]]; then
-   echo "❌ ERROR: Root privileges required"
-   echo
-   echo "Please run this script with sudo:"
-   echo "sudo ./setup-unix.sh"
-   echo
-   exit 1
-fi
-
-# Check if Python3 is installed
-if ! command -v python3 &> /dev/null; then
-    echo "❌ ERROR: Python 3 is not installed"
-    echo
-    echo "Please install Python 3 first:"
-    echo "  Ubuntu/Debian: sudo apt install python3 python3-pip"
-    echo "  macOS: brew install python3"
-    echo "  CentOS/RHEL: sudo yum install python3 python3-pip"
-    echo
+# Require root permissions
+if [ "$EUID" -ne 0 ]; then
+    echo "❌ ERROR: Root privileges required"
+    echo "Please run: sudo ./setup-unix.sh"
     exit 1
 fi
 
-echo "✅ Python 3 is installed"
+# Detect project root (directory where this script lives)
+PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Check Python 3
+if ! command -v python3 &> /dev/null; then
+    echo "❌ Python 3 is not installed. Please install it and try again."
+    exit 1
+fi
+
+echo "✅ Python 3 is installed:"
 python3 --version
 
-# Check if pip is installed
-if ! command -v pip3 &> /dev/null; then
-    echo "❌ ERROR: pip3 is not installed"
-    echo
-    echo "Please install pip3 first:"
-    echo "  Ubuntu/Debian: sudo apt install python3-pip"
-    echo "  macOS: pip3 is included with Python"
-    echo
+# Create virtual environment
+echo ""
+echo "📦 Creating virtual environment at: $PROJECT_DIR/.venv"
+python3 -m venv "$PROJECT_DIR/.venv"
+
+if [ $? -ne 0 ]; then
+    echo "❌ Failed to create virtual environment."
     exit 1
 fi
 
-# Check if required files exist
-if [[ ! -f "aimd.py" ]]; then
-    echo "❌ ERROR: aimd.py not found in current directory"
+# Activate venv and install requirements
+echo ""
+echo "📦 Installing dependencies..."
+source "$PROJECT_DIR/.venv/bin/activate"
+pip install --upgrade pip
+pip install -r "$PROJECT_DIR/requirements.txt"
+
+if [ $? -ne 0 ]; then
+    echo "❌ Failed to install dependencies."
+    deactivate
     exit 1
 fi
+deactivate
 
-if [[ ! -f "generator.py" ]]; then
-    echo "❌ ERROR: generator.py not found in current directory"
-    exit 1
-fi
+# Create global launcher
+echo ""
+echo "⚙️ Installing 'aimd' command..."
 
-if [[ ! -f "utils.py" ]]; then
-    echo "❌ ERROR: utils.py not found in current directory"
-    exit 1
-fi
-
-echo
-echo "📦 Installing Python dependencies..."
-pip3 install certifi httpx requests pathspec tqdm
-
-if [[ $? -ne 0 ]]; then
-    echo "❌ ERROR: Failed to install dependencies"
-    exit 1
-fi
-
-# Create aimd directory
-AIMD_DIR="/usr/local/lib/aimd"
-echo
-echo "📂 Creating AIMD directory: $AIMD_DIR"
-mkdir -p "$AIMD_DIR"
-
-# Copy files
-echo "📂 Copying AIMD files..."
-cp aimd.py "$AIMD_DIR/"
-cp generator.py "$AIMD_DIR/"
-cp utils.py "$AIMD_DIR/"
-
-# Create the aimd command script
-echo "📝 Creating global command..."
-cat > /usr/local/bin/aimd << 'EOF'
+LAUNCHER_PATH="/usr/local/bin/aimd"
+cat <<EOF > "$LAUNCHER_PATH"
 #!/bin/bash
-python3 /usr/local/lib/aimd/aimd.py "$@"
+source "$PROJECT_DIR/.venv/bin/activate"
+python "$PROJECT_DIR/aimd.py" "\$@"
 EOF
 
-# Make it executable
-chmod +x /usr/local/bin/aimd
+chmod +x "$LAUNCHER_PATH"
 
-echo
-echo "✅ Installation completed successfully!"
-echo
-echo "🔑 IMPORTANT: Set your Google AI API key"
-echo "   1. Get your API key from: https://aistudio.google.com/"
-echo "   2. Add this line to your shell profile (~/.bashrc, ~/.zshrc, etc.):"
-echo "      export GOOGLE_API_KEY='your-api-key-here'"
-echo "   3. Reload your shell: source ~/.bashrc (or restart terminal)"
-echo
-echo "🚀 Usage examples:"
-echo "   aimd /path/to/project"
-echo "   aimd . -i node_modules '*.log'"
-echo "   aimd . --output DOCS.md --max-files 100"
-echo
-echo "📁 Installation location: $AIMD_DIR"
-echo "🔗 Command location: /usr/local/bin/aimd"
-echo
-echo "✨ You can now use 'aimd' from anywhere in your terminal!"
+# Done
+echo ""
+echo "✅ AIMD installed globally!"
+echo "👉 You can now run it from anywhere like:"
+echo ""
+echo "   aimd /path/to/your/project --output README.md"
+echo ""
