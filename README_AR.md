@@ -1,4 +1,4 @@
-# AIMD - AI Markdown Generator / مولد ملفات README بالذكاء الاصطناعي
+# AIMD - مولد ملفات README بالذكاء الاصطناعي
 
 **AIMD** هو أداة سطر أوامر تقوم تلقائيًا بإنشاء ملف `README.md` احترافي لأي مشروع باستخدام ذكاء Gemini من Google.
 
