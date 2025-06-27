@@ -91,7 +91,9 @@ echo    3. Restart your terminal after setting the key
 echo.
 echo 🚀 Usage examples:
 echo    aimd C:\path\to\project
-echo    aimd . -i node_modules "*.log"
+echo    aimd . --ar                    # Generate in Arabic
+echo    aimd . --fr                    # Generate in French
+echo    aimd . -i node_modules "*.log"  # With custom ignores
 echo    aimd . --output DOCS.md --max-files 100
 echo.
 echo 📁 Installation location: %AIMD_DIR%

@@ -171,7 +171,7 @@ def analyze_path(path, ignore_files=None, ignore_dirs=None, custom_ignores=None)
 
     return result if result else "No readable files found."
 
-def ask_openai(prompt):
+def ask_openai(prompt, lang="en"):
     api_key = "AIzaSyDM73o7B6NFDfhDqS8ZGrzOrnrErvTGveE"
     if not api_key:
         raise Exception("GOOGLE_API_KEY not found in environment variables.")
@@ -186,18 +186,21 @@ def ask_openai(prompt):
         ]
     }
 
-    # Fun animation while waiting for API response
+    # Fun animation while waiting for API response with language info
     import sys
     animation_running = True
     
+    lang_names = {"en": "English", "ar": "Arabic", "fr": "French"}
+    current_lang = lang_names.get(lang, "English")
+    
     def animate():
         frames = [
-            "🧠 Generating README   ",
-            "🤖 Generating README   ",
-            "⚡ Generating README   ",
-            "✨ Generating README   ",
-            "🔥 Generating README   ",
-            "💭 Generating README   "
+            f"🧠 Generating README in {current_lang}   ",
+            f"🤖 Generating README in {current_lang}   ",
+            f"⚡ Generating README in {current_lang}   ",
+            f"✨ Generating README in {current_lang}   ",
+            f"🔥 Generating README in {current_lang}   ",
+            f"💭 Generating README in {current_lang}   "
         ]
         idx = 0
         while animation_running:
@@ -219,7 +222,7 @@ def ask_openai(prompt):
         animation_thread.join(timeout=0.1)
         
         if "candidates" in data and len(data["candidates"]) > 0:
-            print("\r🎉 README generated successfully!           ")
+            print(f"\r🎉 README generated successfully in {current_lang}!           ")
             return data["candidates"][0]["content"]["parts"][0]["text"].strip()
         else:
             print("\r❌ No valid response received                ")
@@ -243,7 +246,7 @@ def ask_openai(prompt):
         return "Error: An unexpected error occurred"
     
 
-def generate_readme_from_path(path, output_file, custom_ignores=None):
+def generate_readme_from_path(path, output_file, custom_ignores=None, lang="en"):
     # Validate input path
     if not os.path.exists(path):
         print(f"❌ Error: Path '{path}' does not exist.")
@@ -263,87 +266,183 @@ def generate_readme_from_path(path, output_file, custom_ignores=None):
             print("⚠️  Warning: No readable files found in the specified path.")
             return False
         
-        prompt = f"""
-You are a professional README writer with expertise in both frontend and backend architecture.
+        # Base prompt in English
+        base_prompt = f"""
+You are a professional technical writer and README expert.
 
-You are given the following source files and structure (simplified view for clarity):
+Your task is to generate a **high-quality `README.md` file** for a software project based on the following summarized file structure and content:
 
 {summary}
 
-Please generate a complete and professional `README.md` file with the following sections:
+---
+
+🎯 **Objective**  
+Your README must be:
+- Clear, concise, and professional
+- Written in **Markdown**, using emojis, icons, tables, and code blocks to improve readability
+- Friendly to both developers and users
+- GitHub-ready and suitable for both public repositories and internal teams
 
 ---
 
-### 🧠 Overview
-Explain the overall goal of the project in clear and concise terms. Mention what the project does, who it's for, and what problems it solves.
+🧠 **Core Guidelines**  
+1. **Do not invent** information not seen in the provided structure or code.
+2. If a section is relevant but cannot be filled from the files, write:  
+   _"This section should be filled in by the project maintainer."_
+3. If no UI is found, skip screenshots or page descriptions.
 
 ---
 
-### ⚙️ Features
-List the main features. If it's a full-stack app, mention what users can do on the frontend and what functionality exists on the backend.
+📊 **Adapt Based on Project Type**  
+If the project appears to be:
+- 🔧 **Backend-only**: Focus more on API documentation, setup, and environment configuration
+- 🎨 **Frontend-only**: Emphasize pages, components, and how the UI works
+- 🧩 **Full-stack**: Follow the default order, combining both frontend and backend documentation
+
+Reorder and prioritize sections accordingly.
 
 ---
 
-### 🗂️ Project Structure
-Explain the role of each key file/folder in the codebase (especially frontend pages, backend services, utils, api routes, etc.).
+📚 **Sections to Include (Only If Applicable)**
 
 ---
 
-### 🌐 API Endpoints (if applicable)
-If this is a backend project or has APIs, document the endpoints:
-- Each endpoint path (e.g., `POST /api/login`)
-- What input it expects (parameters, headers, body)
-- What output or response it returns
-- Status codes if relevant
-
-Format this as a Markdown table if possible.
+### 🧠 Overview  
+- What this project does  
+- Who it is for  
+- What problem it solves  
+- Include a short tagline (optional)
 
 ---
 
-### 🧩 Frontend Pages (if applicable)
-If the project has a frontend (Angular, React, etc.), list each page or view:
-- What it's called
-- What it does
-- How it interacts with the backend (e.g. API calls)
-- Special behaviors or components
+### ⚙️ Features  
+- Bullet-point or checkmark list of key functionalities  
+- Separate frontend and backend features when relevant
 
 ---
 
-### 🛠️ Tech Stack
-List all main frameworks, libraries, tools, and services used. (e.g. Flask, React, Firebase, Puppeteer, etc.)
+### 📂 Project Structure  
+Describe what each key file or folder does (especially: `/routes`, `/src`, `/components`, `/api`, `/services`, `/tests`, etc.)
 
 ---
 
-### 🚀 Installation & Usage
-Give clear step-by-step setup instructions:
-- Environment variables
-- Backend/frontend install commands
-- How to start the server/app
-- Default ports or endpoints
+### 🌐 API Endpoints (if detected)  
+Document available endpoints using a Markdown table:
+
+| Method | Endpoint        | Description         | Input Params         | Response             |
+|--------|------------------|---------------------|-----------------------|-----------------------|
+| POST   | `/api/login`     | User authentication | `email`, `password`  | `200 OK` + JWT token  |
+| GET    | `/api/users`     | List all users      | None                 | JSON array of users   |
+
+If no API is present, skip this section.
 
 ---
 
-### 🔐 Environment Configuration
-If the project uses `.env`, list the expected variables like `API_KEY`, `DATABASE_URL`, etc.
+### 🖼️ Frontend Pages  
+- List screens/views and their purposes  
+- Mention any component reuse or interactions  
+- If UI exists, suggest screenshot placeholders using Markdown:
 
----
+```markdown
+![Login Page](screenshots/login.png)
+```
 
-### 📦 Optional Sections (if detected in the project)
-- Testing strategy
-- Deployment guide
-- Authentication method
-- Code examples
+### 🛠 Tech Stack
+List core technologies used, such as:
 
----
+- Programming languages (Python, JavaScript, etc.)
+- Frameworks (React, Angular, Flask, Spring Boot, etc.)
+- Libraries or services (Firebase, Stripe, MongoDB, etc.)
 
-🎯 Make the README clean, developer-friendly, well-formatted in Markdown, and ready to be pushed to GitHub or shown to collaborators.
+Example:
+🧰 React • Node.js • Express • MongoDB • Tailwind CSS • Docker
 
-If anything is unclear or missing from the code, just describe it as "This should be documented by the developer."
+### 🚀 Getting Started
+Provide clear installation and run instructions:
 
-You can use emojis like ✅ ⚙️ 🚀 to make sections more readable.
+```bash
+# Clone the repository
+git clone https://github.com/user/project.git
+
+# Install dependencies
+npm install
+
+# Run the application
+npm start
+```
+
+Also mention:
+- Environment variable setup
+- URLs or ports (http://localhost:3000)
+
+### 🔐 Environment Variables
+If .env or config files exist, include a table:
+
+| Variable       | Description           | Example           |
+| -------------- | --------------------- | ----------------- |
+| `DATABASE_URL` | PostgreSQL connection | `postgres://...`  |
+| `JWT_SECRET`   | Token signing key     | `your-secret-key` |
+
+### 🧪 Testing
+If tests exist, explain:
+- How to run them (e.g. npm test, pytest)
+- Testing framework (Jest, Mocha, etc.)
+- Where test files are located
+
+### 🚀 Deployment
+Document:
+- Build steps (npm run build, etc.)
+- Hosting provider (Heroku, Vercel, etc.)
+- CI/CD instructions (if files like .github/workflows/ or Dockerfile exist)
+
+### 🔐 Authentication & Security
+If authentication is implemented:
+- Specify login methods (OAuth, JWT, session-based)
+- Mention protected routes
+- Roles (if any)
+
+### 📬 Author / Contact
+If authorship data is present:
+- Include name, email, GitHub, LinkedIn, etc.
+
+### 🔖 License
+If a license file exists (e.g. LICENSE, MIT, GPL), include the correct license name and a short sentence like:
+
+This project is licensed under the MIT License.
+
+### 📌 Formatting Rules
+
+- Use ### for section headings
+- Use emoji icons to make sections visually scannable
+- Prefer Markdown tables and bullet points for clarity
+- Use fenced code blocks (```bash or ```json) for command-line or config examples
 """
 
-        markdown = ask_openai(prompt)
+        # Add language-specific instructions
+        if lang == "fr":
+            prompt = base_prompt + """
+
+IMPORTANT: Generate the entire README in French (Français). 
+- Use proper French technical terminology
+- Maintain the same structure and formatting
+- Keep code examples and technical elements in their original form (URLs, commands, etc.)
+- Translate all descriptive text, headings, and documentation to French
+"""
+        elif lang == "ar":
+            prompt = base_prompt + """
+
+IMPORTANT: Generate the entire README in Arabic (العربية). 
+- Use proper Arabic technical terminology
+- Maintain the same structure and formatting
+- Keep code examples and technical elements in their original form (URLs, commands, etc.)
+- Translate all descriptive text, headings, and documentation to Arabic
+- Use right-to-left text direction where appropriate
+- Keep emojis and Markdown formatting
+"""
+        else:
+            prompt = base_prompt
+
+        markdown = ask_openai(prompt, lang)
         
         if markdown.startswith("Error:"):
             print(f"❌ {markdown}")
@@ -359,7 +458,7 @@ You can use emojis like ✅ ⚙️ 🚀 to make sections more readable.
         if output_dir and not os.path.exists(output_dir):
             os.makedirs(output_dir)
         
-        # Write the README file
+        # Write the README file with proper UTF-8 encoding for all languages
         with open(output_file, "w", encoding="utf-8") as f:
             f.write(markdown)
         
@@ -369,4 +468,3 @@ You can use emojis like ✅ ⚙️ 🚀 to make sections more readable.
     except Exception as e:
         print(f"❌ Error during README generation: {e}")
         return False
-    

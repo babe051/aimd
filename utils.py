@@ -171,7 +171,7 @@ def analyze_path(path, ignore_files=None, ignore_dirs=None, custom_ignores=None)
 
     return result if result else "No readable files found."
 
-def ask_openai(prompt):
+def ask_openai(prompt, lang="en"):
     api_key = "AIzaSyDM73o7B6NFDfhDqS8ZGrzOrnrErvTGveE"
     if not api_key:
         raise Exception("GOOGLE_API_KEY not found in environment variables.")
@@ -186,18 +186,21 @@ def ask_openai(prompt):
         ]
     }
 
-    # Fun animation while waiting for API response
+    # Fun animation while waiting for API response with language info
     import sys
     animation_running = True
     
+    lang_names = {"en": "English", "ar": "Arabic", "fr": "French"}
+    current_lang = lang_names.get(lang, "English")
+    
     def animate():
         frames = [
-            "🧠 Generating README   ",
-            "🤖 Generating README   ",
-            "⚡ Generating README   ",
-            "✨ Generating README   ",
-            "🔥 Generating README   ",
-            "💭 Generating README   "
+            f"🧠 Generating README in {current_lang}   ",
+            f"🤖 Generating README in {current_lang}   ",
+            f"⚡ Generating README in {current_lang}   ",
+            f"✨ Generating README in {current_lang}   ",
+            f"🔥 Generating README in {current_lang}   ",
+            f"💭 Generating README in {current_lang}   "
         ]
         idx = 0
         while animation_running:
@@ -219,7 +222,7 @@ def ask_openai(prompt):
         animation_thread.join(timeout=0.1)
         
         if "candidates" in data and len(data["candidates"]) > 0:
-            print("\r🎉 README generated successfully!           ")
+            print(f"\r🎉 README generated successfully in {current_lang}!           ")
             return data["candidates"][0]["content"]["parts"][0]["text"].strip()
         else:
             print("\r❌ No valid response received                ")
@@ -241,4 +244,3 @@ def ask_openai(prompt):
         animation_thread.join(timeout=0.1)
         print(f"\r❌ Unexpected error occurred                 ")
         return "Error: An unexpected error occurred"
-    
