@@ -4,17 +4,27 @@
 
 ## 🚀 Quick Installation
 
+### Prerequisites
+
+- Python 3.6 or higher
+- Google AI Studio API key ([Get yours here](https://aistudio.google.com/app/apikey))
+- Internet connection
+
 ### Windows
-1. **Download/Clone** this repository
-2. **Open Command Prompt as Administrator**
-3. **Navigate** to the AIMD folder
-4. **Run**: `setup-windows.bat`
+```cmd
+git clone https://github.com/babe051/aimd.git
+cd aimd
+# Run as Administrator
+setup-windows.bat
+```
 
 ### Linux/macOS
-1. **Download/Clone** this repository
-2. **Navigate** to the AIMD folder
-3. **Run**: `sudo ./setup-unix.sh`
-
+```bash
+git clone https://github.com/babe051/aimd.git
+cd aimd
+chmod +x setup-unix.sh
+sudo ./setup-unix.sh
+```
 
 ## 📖 Usage
 
@@ -181,7 +191,7 @@ Contributions are welcome! To contribute:
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🛡️ Security
 
@@ -199,10 +209,12 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Global command installation
 
 ---
-## 👨‍💻 Author
+## 👥 Contributors
 
-**Mohamed Val** - [@babe051](https://github.com/babe051)
+- [<img src="https://github.com/babe051.png" width="32" height="32" style="border-radius:50%"/>](https://github.com/babe051)  
+  **Mohamed Val** – [@babe051](https://github.com/babe051)
 
----
+- [<img src="https://github.com/Zeini-23025.png" width="32" height="32" style="border-radius:50%"/>](https://github.com/Zeini-23025)  
+  **Zeini Cheikh** – [@Zeini-23025](https://github.com/Zeini-23025)
 
 **Made with ❤️ for developers who love good documentation! 🚀📝**
