@@ -48,16 +48,27 @@ aimd . --output DOCUMENTATION.md --max-files 100
 
 # Plusieurs motifs d’exclusion
 aimd . -i "*.pyc" "__pycache__/" ".env*" "logs/"
+
+# Générer la documentation en arabe
+aimd . --ar
+
+# Générer la documentation en français
+aimd . --fr
 ```
+
 
 ## 🛠️ Options de commande
 
-| Option | Description | Exemple |
-|--------|-------------|---------|
-| `path` | Dossier du projet à analyser | `aimd /projects/webapp` |
-| `--output` | Nom du fichier de sortie (défaut : README.md) | `--output DOCS.md` |
-| `--max-files` | Nombre maximum de fichiers à traiter (défaut : 50) | `--max-files 100` |
-| `-i, --ignore` | Fichiers/dossiers supplémentaires à ignorer | `-i logs/ "*.tmp"` |
+| Option         | Description                                      | Exemple                   |
+|----------------|--------------------------------------------------|---------------------------|
+| `path`         | Dossier du projet à analyser                     | `aimd /projects/webapp`   |
+| `--output`     | Nom du fichier de sortie (par défaut: README.md) | `--output DOCS.md`        |
+| `--max-files`  | Nombre maximal de fichiers à traiter (50 par défaut) | `--max-files 100`     |
+| `-i, --ignore` | Fichiers/dossiers supplémentaires à ignorer      | `-i logs/ "*.tmp"`        |
+| `--ar`         | Générer la documentation en arabe                | `--ar`                    |
+| `--fr`         | Générer la documentation en français             | `--fr`                    |
+
+---
 
 ## ⚙️ Fonctionnalités
 

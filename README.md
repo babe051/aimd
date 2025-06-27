@@ -31,10 +31,10 @@ sudo ./setup-unix.sh
 After installation, use `aimd` from any directory:
 
 ```bash
-# Generate README for current directory
+# Generate a README for the current directory
 aimd .
 
-# Generate README for specific project
+# Generate a README for a specific project
 aimd /path/to/project
 
 # Windows example
@@ -48,16 +48,27 @@ aimd . --output DOCUMENTATION.md --max-files 100
 
 # Multiple ignore patterns
 aimd . -i "*.pyc" "__pycache__/" ".env*" "logs/"
+
+# Generate documentation in Arabic
+aimd . --ar
+
+# Generate documentation in French
+aimd . --fr
 ```
 
 ## 🛠️ Command Options
 
-| Option | Description | Example |
-|--------|-------------|---------|
-| `path` | Project directory to analyze | `aimd /projects/webapp` |
-| `--output` | Output filename (default: README.md) | `--output DOCS.md` |
-| `--max-files` | Maximum files to process (default: 50) | `--max-files 100` |
-| `-i, --ignore` | Additional files/dirs to ignore | `-i logs/ "*.tmp"` |
+
+| Option         | Description                                 | Example                   |
+|----------------|---------------------------------------------|---------------------------|
+| `path`         | Project directory to analyze                | `aimd /projects/webapp`   |
+| `--output`     | Output filename (default: README.md)        | `--output DOCS.md`        |
+| `--max-files`  | Maximum files to process (default: 50)      | `--max-files 100`         |
+| `-i, --ignore` | Additional files/dirs to ignore             | `-i logs/ "*.tmp"`        |
+| `--ar`         | Generate documentation in Arabic            | `--ar`                    |
+| `--fr`         | Generate documentation in French            | `--fr`                    |
+
+---
 
 ## ⚙️ Features
 
