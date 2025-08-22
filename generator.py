@@ -172,7 +172,7 @@ def analyze_path(path, ignore_files=None, ignore_dirs=None, custom_ignores=None)
     return result if result else "No readable files found."
 
 def ask_openai(prompt, lang="en"):
-    api_key = "AIzaSyDM73o7B6NFDfhDqS8ZGrzOrnrErvTGveE"
+    api_key = "AIzaSyBShNVU8MMED5N1353KAsDSEphsQxl88X8"
     if not api_key:
         raise Exception("GOOGLE_API_KEY not found in environment variables.")
 
